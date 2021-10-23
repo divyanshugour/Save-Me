@@ -1,13 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:save_me/connect.dart';
-import 'package:save_me/spalash_screen.dart';
+import 'package:save_me/splash_screen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+
 
   @override
   Widget build(BuildContext context) {

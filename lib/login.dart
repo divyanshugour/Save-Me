@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:save_me/register.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -15,32 +18,26 @@ class _LoginState extends State<Login> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 200,left: 20,right: 20),
+          padding: const EdgeInsets.only(left: 20,right: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/login.gif',height: 200,),
-              const TextField(
+              Image.asset('assets/login.gif',height: 400,),
+              TextField(
                 decoration: InputDecoration(
-                    labelText: "Bluetooth Name",
-                    labelStyle:TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
+                    labelText: "Name",
+                    labelStyle: GoogleFonts.dancingScript(fontWeight: FontWeight.bold,fontSize: 20),
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.indigo),
                     )
                 ),
               ),
               const SizedBox(height: 20.0,),
-              const TextField(
+              TextField(
                 decoration: InputDecoration(
                     labelText: "Password",
-                    labelStyle:TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.indigo,
-                    ),
-                    focusedBorder: UnderlineInputBorder(
+                    labelStyle: GoogleFonts.dancingScript(fontWeight: FontWeight.bold,fontSize: 20),
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.indigo),
                     )
                 ),
@@ -48,7 +45,17 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 40.0,),
               ElevatedButton(
-                onPressed: (){},
+                onPressed: (){
+                  Fluttertoast.showToast(
+                      msg: "Credentials are not correct !",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.indigo,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50),
                   child: Text('Login'),
@@ -58,13 +65,17 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     "Don't have an account?",
-                    style: TextStyle(
-                    ),
+                    style: GoogleFonts.dancingScript(fontSize: 16),
                   ),
                   TextButton(
-                    onPressed: () {  },
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Register()),
+                      );
+                    },
                     child: const Text("Register",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
