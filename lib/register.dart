@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'connect.dart';
 import 'login.dart';
@@ -20,7 +21,6 @@ class _RegisterState extends State<Register> {
   void initState() {
     super.initState();
     Firebase.initializeApp().whenComplete(() {
-      print("completed");
       setState(() {});
     });
   }
@@ -31,6 +31,12 @@ class _RegisterState extends State<Register> {
   TextEditingController btname = TextEditingController();
   TextEditingController number_controller= TextEditingController();
   TextEditingController password = TextEditingController();
+  static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";
+
+  static Future<bool> saveUserLoggedInSharedPreference(bool isUserLoggedIn) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(sharedPreferenceUserLoggedInKey, isUserLoggedIn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,11 +105,12 @@ class _RegisterState extends State<Register> {
               ElevatedButton(
                 onPressed: (){
                   setState(() {
+                    saveUserLoggedInSharedPreference(true);
                     FirebaseFirestore.instance
-                        .collection('data').doc(number_controller.text).set(
+                        .collection('user_info').doc(name.text).set(
                         {'bluetooth_name': btname.text,
                           'password': password.text,
-                          'name': name.text
+                          'number': number_controller.text
                         });
                     Navigator.pushReplacement(
                       context,

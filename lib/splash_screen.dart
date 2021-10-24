@@ -2,7 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:save_me/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
+
+import 'connect.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -14,10 +17,22 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
 
+  static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";
+  bool isLog = false;
+
   @override
   void initState() {
-    super.initState();
     initialise();
+    getUserLoggedInSharedPreference().then((value) =>
+        setState(() {
+          isLog = value!;
+        }),
+    );
+  }
+
+  static Future<bool?> getUserLoggedInSharedPreference() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getBool(sharedPreferenceUserLoggedInKey);
   }
 
   Future<void> initialise() async {
@@ -27,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return SplashScreenView(
-      navigateRoute: const Login(),
+      navigateRoute: isLog ? const Connect() : const Login(),
       duration: 5500,
       imageSize: 250,
       imageSrc: "assets/saveme.gif",

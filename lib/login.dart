@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:save_me/connect.dart';
 import 'package:save_me/register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -11,6 +14,15 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  TextEditingController name = TextEditingController();
+  TextEditingController password = TextEditingController();
+  static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";
+
+  static Future<bool> saveUserLoggedInSharedPreference(bool isUserLoggedIn) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(sharedPreferenceUserLoggedInKey, isUserLoggedIn);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +36,7 @@ class _LoginState extends State<Login> {
             children: [
               Image.asset('assets/login.gif',height: 400,),
               TextField(
+                controller: name,
                 decoration: InputDecoration(
                     labelText: "Name",
                     labelStyle: GoogleFonts.dancingScript(fontWeight: FontWeight.bold,fontSize: 20),
@@ -34,6 +47,7 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 20.0,),
               TextField(
+                controller: password,
                 decoration: InputDecoration(
                     labelText: "Password",
                     labelStyle: GoogleFonts.dancingScript(fontWeight: FontWeight.bold,fontSize: 20),
@@ -46,15 +60,28 @@ class _LoginState extends State<Login> {
               const SizedBox(height: 40.0,),
               ElevatedButton(
                 onPressed: (){
-                  Fluttertoast.showToast(
-                      msg: "Credentials are not correct !",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.indigo,
-                      textColor: Colors.white,
-                      fontSize: 16.0
-                  );
+
+                  FirebaseFirestore.instance
+                      .collection('user_info').where("password", isEqualTo: password.text).get().then((snapshot){
+                        if (snapshot.docs.isEmpty){
+                          Fluttertoast.showToast(
+                              msg: "Credentials are not correct !",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.indigo,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                        }else{
+                          saveUserLoggedInSharedPreference(true);
+                          Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Connect()),
+                              );
+                        }
+                  });
+
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 50),
